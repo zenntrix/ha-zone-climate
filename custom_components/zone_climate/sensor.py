@@ -28,8 +28,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
             zone_humidity_sensor=zone_humidity_sensor,
             trv_humidity_sensors=trv_humidity_sensors,
         ),
-        ZoneSensor(entry, f"{zone_name} Temperature Source", "zone_temp_source"),
-        ZoneSensor(entry, f"{zone_name} Humidity Source", "zone_humidity_source"),
+        ZoneTempSource(entry, f"{zone_name} Temperature Source", "zone_temp_source"),
+        ZoneHumiditySource(entry, f"{zone_name} Humidity Source", "zone_humidity_source"),
         ZoneSensor(entry, f"{zone_name} Temperature Variation", "zone_temp_variation"),
         ZoneSensor(entry, f"{zone_name} Humidity Variation", "zone_humidity_variation"),
     ]
@@ -179,7 +179,6 @@ class ZoneTempSource(SensorEntity):
             self._state = "Backup"
         else:
             self._state = None
-
 
 class ZoneHumiditySource(SensorEntity):
     def __init__(self, hass, config, uid):
