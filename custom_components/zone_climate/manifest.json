@@ -5,5 +5,7 @@
   "documentation": "https://github.com/zenntrix/ha-zone-climate",
   "requirements": [],
   "dependencies": [],
-  "codeowners": ["@zenntrix"]
+  "codeowners": ["@zenntrix"],
+  "config_flow": true,
+  "platforms": ["climate", "sensor"]
 }

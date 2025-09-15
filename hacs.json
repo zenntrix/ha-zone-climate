@@ -1,0 +1,7 @@
+{
+  "name": "Zenntrix Software Ltd - Zone Climate",
+  "domain": "zone_climate",
+  "country": "any",
+  "homeassistant": "2024.0.0",
+  "render_readme": true
+}
