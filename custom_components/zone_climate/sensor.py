@@ -164,15 +164,21 @@ class ZoneTempSource(SensorEntity):
         ]
         self._attr_name = f"{config['name']} Temp Source"
         self._attr_unique_id = uid
+        self._state = None
 
     @property
     def native_value(self):
+        return self._state
+
+    async def async_update(self):
+        """Fetch new state data for the sensor."""
         state = self.hass.states.get(self._primary)
         if state and state.state not in ("unknown", "unavailable", "0"):
-            return "Primary"
+            self._state = "Primary"
         elif self._backups:
-            return "Backup"
-        return None
+            self._state = "Backup"
+        else:
+            self._state = None
 
 
 class ZoneHumiditySource(SensorEntity):
@@ -184,12 +190,18 @@ class ZoneHumiditySource(SensorEntity):
         ]
         self._attr_name = f"{config['name']} Humidity Source"
         self._attr_unique_id = uid
+        self._state = None
 
     @property
     def native_value(self):
+        return self._state
+
+    async def async_update(self):
+        """Fetch new state data for the sensor."""
         state = self.hass.states.get(self._primary)
         if state and state.state not in ("unknown", "unavailable", "0"):
-            return "Primary"
+            self._state = "Primary"
         elif self._backups:
-            return "Backup"
-        return None
+            self._state = "Backup"
+        else:
+            self._state = None

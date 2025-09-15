@@ -30,12 +30,13 @@ class ZoneClimate(ClimateEntity):
     _attr_temperature_unit = TEMP_CELSIUS
     _attr_target_temperature_step = 0.5
 
+    @property
     def device_info(self):
         return {
-          "identifiers": {(DOMAIN, self._attr_unique_id)},
-          "name": self._attr_name,
-          "manufacturer": "Zenntrix Software Ltd",
-          "model": "Zone Climate",
+            "identifiers": {(DOMAIN, self.entry.entry_id)},  # Use entry.entry_id for uniqueness
+            "name": self._attr_name,
+            "manufacturer": "Zenntrix Software Ltd",
+            "model": "Zone Climate",
         }
 
     def __init__(self, hass: HomeAssistant, entry):
