@@ -202,26 +202,47 @@ class ZoneTempSource(SensorEntity):
         self._state = None
 
 class ZoneHumiditySource(SensorEntity):
-    def __init__(self, hass, config, uid):
-        self.hass = hass
-        self._primary = config.get("zone_humidity_sensor")
-        self._backups = [
-            s.strip() for s in config.get("trv_humidity_sensors", "").split(",") if s.strip()
-        ]
-        self._attr_name = f"{config['name']} Humidity Source"
-        self._attr_unique_id = uid
+    """Representation of the humidity source sensor."""
+
+    def __init__(self, entry, name, unique_id):
+        """Initialize the humidity source sensor."""
+        self._entry = entry
+        self._attr_name = name
+        self._attr_unique_id = unique_id
+        self._primary_sensor = entry.data.get("zone_humidity_sensor")
+        self._backup_sensors = entry.data.get("trv_humidity_sensors", [])
         self._state = None
 
     @property
+    def device_info(self):
+        """Return device information for the sensor."""
+        return {
+            "identifiers": {(DOMAIN, self._entry.entry_id)},
+            "name": self._entry.data.get("zone_name"),
+            "manufacturer": "Zenntrix Software",
+            "model": "Zone Climate",
+        }
+
+    @property
     def native_value(self):
+        """Return the current state of the sensor."""
         return self._state
 
     async def async_update(self):
         """Fetch new state data for the sensor."""
-        state = self.hass.states.get(self._primary)
-        if state and state.state not in ("unknown", "unavailable", "0"):
-            self._state = "Primary"
-        elif self._backups:
-            self._state = "Backup"
-        else:
-            self._state = None
+        # Check the primary sensor first
+        if self._primary_sensor:
+            state = self.hass.states.get(self._primary_sensor)
+            if state and state.state not in ("unknown", "unavailable"):
+                self._state = "Primary"
+                return
+
+        # Fallback to backup sensors
+        for sensor in self._backup_sensors:
+            state = self.hass.states.get(sensor)
+            if state and state.state not in ("unknown", "unavailable"):
+                self._state = "Backup"
+                return
+
+        # If no valid sensors are available
+        self._state = None
