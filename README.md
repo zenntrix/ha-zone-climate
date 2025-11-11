@@ -3,12 +3,12 @@
 A custom Home Assistant integration that creates a **Zone Climate entity**.
 
 It allows you to define a "zone" (e.g. a bedroom or office) with:
-- A **primary temperature sensor** and optional backup TRV sensors  
-- A **primary humidity sensor** and optional backup TRV humidity sensors  
-- A **primary heating control** (climate or switch) and optional backup  
+- A **room temperature sensor** and optional TRV TRV sensors  
+- A **room humidity sensor** and optional TRV TRV humidity sensors  
+- A **room heating control** (climate or switch) and optional TRV  
 
 The integration creates a **full Climate entity** (`climate.<zone_name>`) that:
-- Uses primary → fallback logic for temp/humidity sensors  
+- Uses room → fallback logic for temp/humidity sensors  
 - Controls heating via the chosen climate/switch device(s)  
 - Exposes extra sensors for data source/variation if configured  
 
@@ -33,8 +33,8 @@ The integration creates a **full Climate entity** (`climate.<zone_name>`) that:
    - TRV Temp Sensors (comma separated list, optional)  
    - Zone Humidity Sensor (optional)  
    - TRV Humidity Sensors (comma separated list, optional)  
-   - Primary Heating Control (climate or switch)  
-   - Backup Heating Control (optional)  
+   - Room Heating Control (climate or switch)  
+   - TRV Heating Control (optional)  
 
 ---
 

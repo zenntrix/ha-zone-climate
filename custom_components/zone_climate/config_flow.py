@@ -29,7 +29,7 @@ class ZoneClimateConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("zone_name"): str,
 
-                    # Primary sensors
+                    # Room sensors
                     vol.Optional("zone_temp_sensor"): EntitySelector(
                         EntitySelectorConfig(domain="sensor")
                     ),

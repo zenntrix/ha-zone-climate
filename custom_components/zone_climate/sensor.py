@@ -184,18 +184,18 @@ class ZoneTempSource(SensorEntity):
 
     async def async_update(self):
         """Fetch new state data for the sensor."""
-        # Check the primary sensor first
+        # Check the room sensor first
         if self._primary_sensor:
             state = self.hass.states.get(self._primary_sensor)
             if state and state.state not in ("unknown", "unavailable"):
-                self._state = "Primary"
+                self._state = "Room"
                 return
 
-        # Fallback to backup sensors
+        # Fallback to TRV sensors
         for sensor in self._backup_sensors:
             state = self.hass.states.get(sensor)
             if state and state.state not in ("unknown", "unavailable"):
-                self._state = "Backup"
+                self._state = "TRV"
                 return
 
         # If no valid sensors are available
@@ -230,18 +230,18 @@ class ZoneHumiditySource(SensorEntity):
 
     async def async_update(self):
         """Fetch new state data for the sensor."""
-        # Check the primary sensor first
+        # Check the room sensor first
         if self._primary_sensor:
             state = self.hass.states.get(self._primary_sensor)
             if state and state.state not in ("unknown", "unavailable"):
-                self._state = "Primary"
+                self._state = "Room"
                 return
 
-        # Fallback to backup sensors
+        # Fallback to TRV sensors
         for sensor in self._backup_sensors:
             state = self.hass.states.get(sensor)
             if state and state.state not in ("unknown", "unavailable"):
-                self._state = "Backup"
+                self._state = "TRV"
                 return
 
         # If no valid sensors are available

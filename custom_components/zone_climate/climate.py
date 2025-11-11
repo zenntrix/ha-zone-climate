@@ -91,12 +91,12 @@ class ZoneClimate(ClimateEntity):
         temp = None
         humidity = None
 
-        # Temperature: prefer primary
+        # Temperature: prefer room
         if self._zone_temp_sensor:
             state = self.hass.states.get(self._zone_temp_sensor)
             if state and state.state not in (None, "unknown", "unavailable"):
                 temp = float(state.state)
-                self._source_temp = "Primary"
+                self._source_temp = "Room"
 
         # Fallback to TRVs
         if temp is None and self._trv_temp_sensors:
@@ -110,14 +110,14 @@ class ZoneClimate(ClimateEntity):
                         pass
             if vals:
                 temp = sum(vals) / len(vals)
-                self._source_temp = "Backup"
+                self._source_temp = "TRV"
 
-        # Humidity: prefer primary
+        # Humidity: prefer room
         if self._zone_humidity_sensor:
             state = self.hass.states.get(self._zone_humidity_sensor)
             if state and state.state not in (None, "unknown", "unavailable"):
                 humidity = float(state.state)
-                self._source_humidity = "Primary"
+                self._source_humidity = "Room"
 
         # Fallback to TRVs
         if humidity is None and self._trv_humidity_sensors:
@@ -131,7 +131,7 @@ class ZoneClimate(ClimateEntity):
                         pass
             if vals:
                 humidity = sum(vals) / len(vals)
-                self._source_humidity = "Backup"
+                self._source_humidity = "TRV"
 
         self._attr_current_temperature = temp
         self._attr_extra_state_attributes = {
@@ -142,7 +142,7 @@ class ZoneClimate(ClimateEntity):
         }
 
     def _calc_temp_variation(self):
-        """Difference between primary and TRV temps."""
+        """Difference between room and TRV temps."""
         if not self._zone_temp_sensor or not self._trv_temp_sensors:
             return None
         primary_state = self.hass.states.get(self._zone_temp_sensor)
@@ -165,7 +165,7 @@ class ZoneClimate(ClimateEntity):
         return round(primary_val - (sum(trv_vals) / len(trv_vals)), 1)
 
     def _calc_humidity_variation(self):
-        """Difference between primary and TRV humidity."""
+        """Difference between room and TRV humidity."""
         if not self._zone_humidity_sensor or not self._trv_humidity_sensors:
             return None
         primary_state = self.hass.states.get(self._zone_humidity_sensor)
@@ -208,7 +208,7 @@ class ZoneClimate(ClimateEntity):
             self.async_write_ha_state()
 
     async def _turn_on_heating(self):
-        """Turn on heating via primary or backup control."""
+        """Turn on heating via room or TRV control."""
         service_data = {}
         if self._primary_heating.startswith("climate."):
             service = "climate.set_temperature"
@@ -226,7 +226,7 @@ class ZoneClimate(ClimateEntity):
         )
 
     async def _turn_off_heating(self):
-        """Turn off heating via primary or backup control."""
+        """Turn off heating via room or TRV control."""
         if self._primary_heating.startswith("climate."):
             service = "climate.set_hvac_mode"
             service_data = {
